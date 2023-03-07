@@ -13,6 +13,10 @@ app.set('port', process.env.PORT || 3000);
 
 app.get('/', (req: any, res: any) => {
     res.sendFile(path.join(__dirname, './index.html'))
+});
+
+app.get('/category/:name', (req: any, res: any) => {
+    res.send(`category ${req.params.name}`);
 })
 
 
