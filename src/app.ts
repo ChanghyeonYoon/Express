@@ -17,7 +17,11 @@ app.get('/', (req: any, res: any) => {
 
 app.get('/category/:name', (req: any, res: any) => {
     res.send(`category ${req.params.name}`);
-})
+});
+
+app.get('*', (req: any, res: any) => {
+    res.send('404 Not Found');
+});
 
 
 app.listen(app.get('port'), () => {
