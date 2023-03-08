@@ -1,7 +1,16 @@
 const express = require("express");
 const path = require("path");
+const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
 
 const app = express();
+
+app.set('port', process.env.PORT || 3000);
+
+app.use(morgan('dev')); // combined, common, dev, short, tiny
+app.use(cookieParser());
+app.use(express.json()); // json 형식의 데이터를 받을 수 있게 해줌.
+app.use(express.urlencoded({ extended: true })); // form 의 데이터를 받을 수 있게 해줌. true: qs, false: querystring
 
 app.use((req: any, res: any, next: any) => {
     // Middleware
@@ -23,9 +32,16 @@ app.use('/about', (req: any, res: any, next: any) => {
     next();
 });
 
-app.set('port', process.env.PORT || 3000);
+
 
 app.get('/', (req: any, res: any) => {
+    req.cookies;
+    res.cookie('name', encodeURIComponent('value'), {
+        expires: new Date(),
+        httpOnly: true,
+        path: '/',
+    })
+
     res.sendFile(path.join(__dirname, './index.html'))
     // MEMO: send 를 한 이후 다른 send 를 하면 에러가 남.
     // ex: sendFile, sendStatus, send, json, redirect, render
@@ -52,5 +68,5 @@ app.use((err: any, req: any, res: any, next: any) => {
 
 
 app.listen(app.get('port'), () => {
-    console.log(`server is running on port ${app.get('port')} ...`)
+    console.log(`모에모에뀽 >< ${app.get('port')} ...`)
 });
