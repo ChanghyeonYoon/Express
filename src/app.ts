@@ -32,6 +32,11 @@ app.use(session({
 app.use(express.json()); // json 형식의 데이터를 받을 수 있게 해줌.
 app.use(express.urlencoded({ extended: true })); // form 의 데이터를 받을 수 있게 해줌. true: qs, false: querystring
 
+const indexRouter = require("./routes");
+
+
+app.use('/', indexRouter);
+
 // MEMO 파일 업로드
 try {
     fs.readdirSync('uploads');
@@ -94,20 +99,7 @@ app.use('/about', (req: any, res: any, next: any) => {
 
 
 
-app.get('/', (req: any, res: any) => {
-    req.cookies;
-    res.cookie('name', encodeURIComponent('value'), {
-        expires: new Date(),
-        httpOnly: true,
-        path: '/',
-    })
 
-    // req.session.id = 'value';
-
-    res.sendFile(path.join(__dirname, './index.html'))
-    // MEMO: send 를 한 이후 다른 send 를 하면 에러가 남.
-    // ex: sendFile, sendStatus, send, json, redirect, render
-});
 
 app.get('/category/:name', (req: any, res: any) => {
     res.send(`category ${req.params.name}`);
