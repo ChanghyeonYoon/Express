@@ -2,15 +2,22 @@ const express = require("express");
 const path = require("path");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const multer = require("multer");
 
 const app = express();
 
 app.set('port', process.env.PORT || 3000);
 
 app.use(morgan('dev')); // combined, common, dev, short, tiny
+
+// app.use('요청경로', express.static(__dirname, '실제 경로')); // 정적인 파일을 제공할 때 사용.
+
 app.use(cookieParser());
 app.use(express.json()); // json 형식의 데이터를 받을 수 있게 해줌.
 app.use(express.urlencoded({ extended: true })); // form 의 데이터를 받을 수 있게 해줌. true: qs, false: querystring
+
+
 
 app.use((req: any, res: any, next: any) => {
     // Middleware
