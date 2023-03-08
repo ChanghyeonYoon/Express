@@ -13,7 +13,16 @@ app.use(morgan('dev')); // combined, common, dev, short, tiny
 
 // app.use('요청경로', express.static(__dirname, '실제 경로')); // 정적인 파일을 제공할 때 사용.
 
-app.use(cookieParser());
+app.use(cookieParser('secret key'));
+app.use(session({
+    resave: false,
+    saveUninitialized: false,
+    secret: 'secret key',
+    cookie: {
+        httpOnly: true,
+    },
+    name: 'connect.sid',
+}));
 app.use(express.json()); // json 형식의 데이터를 받을 수 있게 해줌.
 app.use(express.urlencoded({ extended: true })); // form 의 데이터를 받을 수 있게 해줌. true: qs, false: querystring
 
@@ -48,6 +57,8 @@ app.get('/', (req: any, res: any) => {
         httpOnly: true,
         path: '/',
     })
+
+    // req.session.id = 'value';
 
     res.sendFile(path.join(__dirname, './index.html'))
     // MEMO: send 를 한 이후 다른 send 를 하면 에러가 남.
