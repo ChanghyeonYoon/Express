@@ -3,7 +3,10 @@ const path = require("path");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
+
+
 const multer = require("multer");
+const fs = require("fs");
 
 const app = express();
 
@@ -25,6 +28,44 @@ app.use(session({
 }));
 app.use(express.json()); // json 형식의 데이터를 받을 수 있게 해줌.
 app.use(express.urlencoded({ extended: true })); // form 의 데이터를 받을 수 있게 해줌. true: qs, false: querystring
+
+// MEMO 파일 업로드
+try {
+    fs.readdirSync('uploads');
+} catch (error) {
+    console.error('uploads 폴더가 없어 uploads 폴더를 생성합니다.');
+    fs.mkdirSync('uploads');
+}
+
+const upload = multer({
+    storage: multer.diskStorage({
+        destination(req: any, file: any, cb: any) {
+            cb(null, 'uploads/');
+        },
+        filename(req: any, file: any, cb: any) {
+            const ext = path.extname(file.originalname); // 확장자 추출
+            cb(null, path.basename(file.originalname, ext) + Date.now() + ext); // 파일명 중복 방지를 위해 날짜 추가
+        },
+    }),
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+});
+
+app.get('/upload', (req: any, res: any) => {
+    res.sendFile(path.join(__dirname, './upload.html'));
+});
+
+// upload.single('image') 는 이미지 하나만 업로드 가능.
+// upload.array('image', 10) 는 이미지 10개까지 업로드 가능.
+// upload.fields([{ name: 'image1' }, { name: 'image2' }]) 는 image1, image2 두개의 이미지를 업로드 가능.
+// upload.none() 은 이미지를 업로드 하지 않음. (데이터만 multipart/form-data 일 때 사용)
+app.post('/upload', upload.single('image'), (req: any, res: any) => {
+    console.log(req.file, req.body);
+    // 이미지 여러개면 req.files
+    // fields 면 req.files.image1, req.files.image2
+    res.send('ok');
+});
+
+
 
 
 
