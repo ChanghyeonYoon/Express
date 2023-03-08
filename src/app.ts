@@ -1,3 +1,6 @@
+const dotenv = require("dotenv");
+dotenv.config();
+
 const express = require("express");
 const path = require("path");
 const morgan = require("morgan");
@@ -16,11 +19,11 @@ app.use(morgan('dev')); // combined, common, dev, short, tiny
 
 // app.use('요청경로', express.static(__dirname, '실제 경로')); // 정적인 파일을 제공할 때 사용.
 
-app.use(cookieParser('secret key'));
+app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
     resave: false,
     saveUninitialized: false,
-    secret: 'secret key',
+    secret: process.env.COOKIE_SECRET,
     cookie: {
         httpOnly: true,
     },
